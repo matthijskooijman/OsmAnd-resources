@@ -19,18 +19,33 @@ jobs:
         uses: actions/checkout@v4
         with:
             sparse-checkout: 'rendering_styles'
+            # This should be enough to figure out if any rendering files changed without fetching the full history
+            fetch-depth: 20
 
       - name: Install system packages
         run: |
           sudo apt-get update
-          sudo apt-get -y install jq
+          sudo apt-get -y install jq moreutils
 
       - name: Build OSF file
         run: |
-            ./rendering_styles/build_osf.sh
+          git diff --name-only --diff-filter=d "${{github.event.base_ref}}~1" HEAD | xargs -d'\n' -n 1 basename | xargs -d'\n' ./rendering_styles/build_osf.sh
 
       - name: Upload built artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Rendering styles
           path: rendering_styles/*.osf
+      - name: Add artifact links to PR and issues
+        # This uses a third-party action that handles figuring out the
+        # pull request to comment on and formatting the comment.
+        uses: tonyhallett/artifacts-url-comments@v1.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          prefix: "Automatically generated build artifacts for commit ${{ github.event.workflow_run.head_sha }} (note: these links will expire after some time):\n"
+          format: " - {name}: [:arrow_double_down: Download]({url})"
+          # This adds a hline to terminate the artifact list, just
+          # newlines should work, but it seems they are eaten
+          # somewhere...
+          suffix: "---\n\nTo test this PR, download the osf file and open it with Osmand\n"
