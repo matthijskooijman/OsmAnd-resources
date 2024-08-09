@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <renderingStyle name="default" depends="" defaultColor="#ebe7e4" version="1">
 
+
+
+
+
+
 	<!--  Documentation of the rendering syntax:
 		Elements:
 			<switch> :  Old convention <group>, bundles (groups) a section of <case>, <apply>, and further <switch> levels
