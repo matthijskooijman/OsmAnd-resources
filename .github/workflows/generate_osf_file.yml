@@ -1,0 +1,36 @@
+name: Build OSF file
+on:
+  pull_request:
+    paths: ['rendering_styles/*.render.xml']
+
+jobs:
+  build_osf:
+    # This runs the test suite. Since we need some system dependencies
+    # (e.g. pygobject) that cannot easily be installed inside a
+    # virtualenv using pip (that requires installing a dozen -dev
+    # packages and building parts of pygobject from source, which makes
+    # things way too complicated), this just runs with the Ubuntu system
+    # python (e.g. not using the standard setup-python action, which
+    # sets up a virtualenv).
+    name: Build OSF file
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare repo
+        uses: actions/checkout@v4
+        with:
+            sparse-checkout: 'rendering_styles'
+
+      - name: Install system packages
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install jq
+
+      - name: Build OSF file
+        run: |
+            ./rendering_styles/build_osf.sh
+
+      - name: Upload built artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Rendering styles
+          path: rendering_styles/*.osf
