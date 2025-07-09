@@ -6,6 +6,7 @@
 
 
 
+
 	<!--  Documentation of the rendering syntax:
 		Elements:
 			<switch> :  Old convention <group>, bundles (groups) a section of <case>, <apply>, and further <switch> levels
