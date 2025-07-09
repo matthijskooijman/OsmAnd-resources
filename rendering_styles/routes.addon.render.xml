@@ -58,7 +58,7 @@
 		</case>
 	</renderingAttribute>
 	<renderingAttribute name="cycleNodeTextColor">
-		<case attrColorValue="#0000ff">
+		<case attrColorValue="#00ff00">
 			<apply_if nightMode="true" attrColorValue="#578AEC"/>
 		</case>
 	</renderingAttribute>
