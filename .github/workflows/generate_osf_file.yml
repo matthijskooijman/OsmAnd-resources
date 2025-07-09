@@ -5,13 +5,6 @@ on:
 
 jobs:
   build_osf:
-    # This runs the test suite. Since we need some system dependencies
-    # (e.g. pygobject) that cannot easily be installed inside a
-    # virtualenv using pip (that requires installing a dozen -dev
-    # packages and building parts of pygobject from source, which makes
-    # things way too complicated), this just runs with the Ubuntu system
-    # python (e.g. not using the standard setup-python action, which
-    # sets up a virtualenv).
     name: Build OSF file
     runs-on: ubuntu-latest
     steps:
@@ -39,3 +32,19 @@ jobs:
         with:
           name: Rendering styles
           path: rendering_styles/*.osf
+  comment:
+    name: Comment
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 Thanks for reporting!'
+            })
